@@ -60,5 +60,13 @@ public class AutoHelper {
         Log.d(TAG, "onCreate YaHa!");
     }
 
+    public static void onFormBodyYaHa() {
+        Log.d(TAG, "FormBody YaHa!");
+    }
+
+    public static void onMediaTypeYaHa() {
+        Log.d(TAG, "MediaTypeYaha YaHa!");
+    }
+
 
 }

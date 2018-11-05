@@ -24,7 +24,7 @@ repositories {
 
 //group和version在后面使用自定义插件的时候会用到
 group='com.jd.lib.asmplugin'
-version='1.0.16'
+version='1.0.24'
 
 uploadArchives {
     repositories {

@@ -37,6 +37,28 @@ class ChoiceUtil {
                     methodVisitor.visitMethodInsn(184, "com/xishuang/plugintest/AutoHelper", "onClick", "(Landroid/view/View;)V", false)
                 }
             }
+        } else if (name == "parse") {
+            adapter = new AutoMethodVisitor(methodVisitor, access, name, desc) {
+                @Override
+                protected void onMethodEnter() {
+                    super.onMethodEnter()
+                    // ALOAD 25
+                    methodVisitor.visitVarInsn(25, 1)
+                    // INVOKESTATIC 184
+                    methodVisitor.visitMethodInsn(184, "com/jd/lib/asmdextest/AutoHelper", "onMediaTypeYaHa", "()V", false)
+                }
+            }
+        } else if (name == "add" && className.contains("Activity")) {
+            adapter = new AutoMethodVisitor(methodVisitor, access, name, desc) {
+                @Override
+                protected void onMethodEnter() {
+                    super.onMethodEnter()
+                    // ALOAD 25
+                    methodVisitor.visitVarInsn(25, 1)
+                    // INVOKESTATIC 184
+                    methodVisitor.visitMethodInsn(184, "com/jd/lib/asmdextest/AutoHelper", "onFormBodyYaHa", "()V", false)
+                }
+            }
         } else if (name == "onCreate" && className.contains("Activity")) {
             adapter = new AutoMethodVisitor(methodVisitor, access, name, desc) {
                 @Override
@@ -155,6 +177,8 @@ class ChoiceUtil {
             isMeetClassCondition = true
         } else if(className.contains('Activity')) {
             isMeetClassCondition = true
+        } else if(className.startsWith('okhttp')) {
+            isMeetClassCondition = true
         }
         return isMeetClassCondition
     }
@@ -210,7 +234,9 @@ class ChoiceUtil {
         if ((name == 'initText' && desc == '()V')
                 || (name == 'initNum' && desc == '(I)V')
                 || (name == 'onCreate' && desc == '(Landroid/os/Bundle;)V')
-            || isMatchingSettingMethod(name, desc)) {
+                || (name == 'parse' && desc == '(Ljava/lang/String;)Lokhttp3/MediaType;')
+                ||(name == 'add' && desc == '(Ljava/lang/String;Ljava/lang/String;)Lokhttp3/FormBody/Builder;')
+                || isMatchingSettingMethod(name, desc)) {
             return true
         } else {
             return false

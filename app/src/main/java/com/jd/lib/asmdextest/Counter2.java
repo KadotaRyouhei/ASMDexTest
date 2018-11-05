@@ -9,6 +9,7 @@ import android.util.Log;
 public class Counter2 {
 
     public void test() {
+        Log.d("AutoHelper", "do test !");
     }
 
     public void test2(){
