@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.asm.gradle'
+
+configurations.all {
+    resolutionStrategy.force 'com.android.support:support-annotations:26.1.0'
+}
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.jd.lib.asmdextest"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+import org.objectweb.asm.AnnotationVisitor
+import org.objectweb.asm.MethodVisitor
+import com.jd.lib.asmplugin.AutoMethodVisitor
+
+xiaoqingwa {
+    name = "小傻逼"
+    isDebug = true
+    //具体配置
+    matchData = [
+            //是否使用注解来找对应方法
+            'isAnotation'  : false,
+            //方法的匹配，可以通过类名或者实现的接口名匹配
+            'ClassFilter'  : [
+                    ['ClassName' : 'com/jd/lib/asmdextest.Counter2', 'InterfaceName': '',
+                     'MethodName': 'test2', 'MethodDes': '()V']
+            ],
+            //插入的字节码，方法的执行顺序visitAnnotation->onMethodEnter->onMethodExit
+            'MethodVisitor': {
+                MethodVisitor methodVisitor, int access, String name, String desc ->
+                    MethodVisitor adapter = new AutoMethodVisitor(methodVisitor, access, name, desc) {
+                        boolean isAnnotation = false
+
+                        @Override
+                        protected void onMethodEnter() {
+                            super.onMethodEnter()
+                            //使用注解找对应方法的时候得加这个判断
+//                            if (!isAnnotation){
+//                                return
+//                            }
+                        }
+
+                        @Override
+                        protected void onMethodExit(int opcode) {
+                            super.onMethodExit(opcode)
+                            //使用注解找对应方法的时候得加这个判断
+//                            if (!isAnnotation) {
+//                                return
+//                            }
+                            // INVOKESTATIC
+                            //methodVisitor.visitMethodInsn(184, "com/jd/lib/asmdextest/AutoHelper", "onClick", "()V", false)
+                        }
+
+                        /**
+                         * 需要通过注解的方式加字节码才会重写这个方法来进行条件过滤
+                         */
+                        @Override
+                        AnnotationVisitor visitAnnotation(String des, boolean visible) {
+//                            if (des == 'Lcom/xishuang/annotation/AutoCount;') {
+//                                println "注解匹配：" + des
+//                                isAnnotation = true
+//                            }
+                            return super.visitAnnotation(des, visible)
+                        }
+                    }
+                    return adapter
+            }
+    ]
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
